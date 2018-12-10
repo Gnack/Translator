@@ -15,6 +15,7 @@
 		065A609721B8104200196989 /* TranslatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A609621B8104200196989 /* TranslatorTests.swift */; };
 		065A60A221B8104200196989 /* TranslatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A60A121B8104200196989 /* TranslatorUITests.swift */; };
 		066EE4DF21BE6F6B0076D948 /* DetectionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066EE4DE21BE6F6B0076D948 /* DetectionResponse.swift */; };
+		066EE4E121BE83210076D948 /* Translation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066EE4E021BE83210076D948 /* Translation.swift */; };
 		06F828CC21BBBEBC007F7EC9 /* TranslationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F828CB21BBBEBC007F7EC9 /* TranslationResponse.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 		065A60A121B8104200196989 /* TranslatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorUITests.swift; sourceTree = "<group>"; };
 		065A60A321B8104200196989 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		066EE4DE21BE6F6B0076D948 /* DetectionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionResponse.swift; sourceTree = "<group>"; };
+		066EE4E021BE83210076D948 /* Translation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translation.swift; sourceTree = "<group>"; };
 		06F828CB21BBBEBC007F7EC9 /* TranslationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,6 +107,7 @@
 				066EE4DE21BE6F6B0076D948 /* DetectionResponse.swift */,
 				065A608121B8103E00196989 /* AppDelegate.swift */,
 				065A608321B8103E00196989 /* ViewController.swift */,
+				066EE4E021BE83210076D948 /* Translation.swift */,
 				065A608521B8103E00196989 /* Main.storyboard */,
 				065A608821B8104200196989 /* Assets.xcassets */,
 				065A608A21B8104200196989 /* LaunchScreen.storyboard */,
@@ -266,6 +269,7 @@
 				06F828CC21BBBEBC007F7EC9 /* TranslationResponse.swift in Sources */,
 				065A608421B8103E00196989 /* ViewController.swift in Sources */,
 				065A608221B8103E00196989 /* AppDelegate.swift in Sources */,
+				066EE4E121BE83210076D948 /* Translation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
