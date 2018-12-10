@@ -8,39 +8,31 @@
 
 import Foundation
 
-struct Message {
-    var text: String?
+struct TranslationResponse {
+    var translatedText: String?
     var language: String?
-    var date: Date
+    var code: Int?
     
-    
-    
-    init(text: String?, language: String?, date: Date){
-        self.text = text
+    init(translatedText: String?, language: String?, code: Int?){
+        self.translatedText = translatedText
         self.language = language
-        self.date = date
+        self.code=code
     }
 }
 
-extension Message: Decodable {
+extension TranslationResponse: Decodable {
     enum CodingKeys: String, CodingKey {
         case language = "lang"
-        case text
+        case text, code
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        //let text: String? = try? container.decode(String.self, forKey: .text)
         let language: String? = try? container.decode(String.self, forKey: .language)
-        let date = Date.init()
-        
+        let code: Int? = try? container.decode(Int.self, forKey: .code)
         var textContainer = try container.nestedUnkeyedContainer(forKey: .text)
         let text = try? textContainer.decode(String.self)
-        self.init(text: text, language: language, date: date)
+        self.init(translatedText: text, language: language, code: code)
     }
 }
-struct TranslationResponse {
-    var Translation: [Message]
-    
-    
-}
+

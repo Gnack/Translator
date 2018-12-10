@@ -71,16 +71,23 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hKV-eA-LLv">
+                                <rect key="frame" x="321" y="629" width="46" height="30"/>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="MaC-x6-NHZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="JSN-jH-p5E"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="MaC-x6-NHZ" secondAttribute="bottom" constant="8" id="cAQ-jE-c5v"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="hKV-eA-LLv" secondAttribute="trailing" constant="8" id="knY-7b-MOE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="MaC-x6-NHZ" secondAttribute="trailing" constant="8" id="nzJ-Nq-c1h"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="hKV-eA-LLv" secondAttribute="bottom" constant="8" id="ujS-Rk-rLE"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="sendButton" destination="hKV-eA-LLv" id="2ef-sJ-R1A"/>
                         <outlet property="table" destination="BKH-nL-KVF" id="Idn-aC-6vH"/>
                     </connections>
                 </viewController>

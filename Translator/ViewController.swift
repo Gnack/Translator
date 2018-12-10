@@ -10,9 +10,10 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate {
     
+    @IBOutlet weak var sendButton: UIButton!
     
     
-    var messages: [Message] = []
+    var messages: [TranslationResponse] = []
     
     let defaultSession = URLSession(configuration: .default)
     var dataTask: URLSessionDataTask?
@@ -45,7 +46,7 @@ class ViewController: UIViewController, UITableViewDelegate {
             defaultSession.dataTask(with: url) { data, response, error in
                 //if let json = try? JSONSerialization.jsonObject(with: data!, options: []) {
                 DispatchQueue.main.async {
-                    if let data = data, let message=try? JSONDecoder().decode(Message.self, from: data) {
+                    if let data = data, let message=try? JSONDecoder().decode(TranslationResponse.self, from: data) {
                         self.messages.append(message)
                     }
                     self.table.reloadData()
@@ -63,7 +64,7 @@ extension ViewController: UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Out", for: indexPath)
-        cell.textLabel?.text = messages[indexPath.row].text
+        cell.textLabel?.text = messages[indexPath.row].translatedText
             
         return cell
     }
