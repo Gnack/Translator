@@ -37,6 +37,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         
         table.register(TranslatorTableViewCell.self, forCellReuseIdentifier: "custom")
         
+        loadData()
     }
     
     
@@ -72,8 +73,8 @@ class ViewController: UIViewController, UITableViewDelegate {
                                     print(err)
                                 }
                                 
-                                self.loadData(appDelegate: appDelegate!, context: context)
-                                //self.translations.insert(translation, at: 0)
+                                self.loadData()
+                               
                             }
                            
                         }
@@ -83,12 +84,14 @@ class ViewController: UIViewController, UITableViewDelegate {
         }
     }
     
-    func loadData (appDelegate: AppDelegate, context: NSManagedObjectContext){
-        let fetchRequest = NSFetchRequest<Translation>(entityName: "Translation")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
-        translations = try! context.fetch(fetchRequest)
-        table.reloadData()
-        
+    func loadData (){
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        if let context = appDelegate?.persistentContainer.viewContext {
+            let fetchRequest = NSFetchRequest<Translation>(entityName: "Translation")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+            translations = try! context.fetch(fetchRequest)
+            table.reloadData()
+        }
     }
 }
 
@@ -97,11 +100,9 @@ extension ViewController: UITableViewDataSource {
         return translations.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "Out", for: indexPath)
-//        cell.textLabel?.text = translations[indexPath.row].translatedText
-//        cell.detailTextLabel?.text = translations[indexPath.row].originalText
         let cell = tableView.dequeueReusableCell(withIdentifier: "custom", for: indexPath)
         if let customCell = cell as? TranslatorTableViewCell {
+            customCell.originalText?.text = translations[indexPath.row].originalText
             customCell.translatedText?.text = translations[indexPath.row].translatedText
             
             customCell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
@@ -111,6 +112,8 @@ extension ViewController: UITableViewDataSource {
 
         return cell
     }
+    
+    
 }
 
 
