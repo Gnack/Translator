@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController, UITableViewDelegate {
     
@@ -18,8 +19,8 @@ class ViewController: UIViewController, UITableViewDelegate {
     let defaultSession = URLSession(configuration: .default)
     var dataTask: URLSessionDataTask?
     
-    var chosenLanguageFrom: Translation.Language = .english
-    var chosenLanguageTo: Translation.Language = .russian
+    var chosenLanguageFrom: String = "en"
+    var chosenLanguageTo: String = "ru"
     
     @IBOutlet weak var inputField: UITextField!
     
@@ -36,40 +37,56 @@ class ViewController: UIViewController, UITableViewDelegate {
     
     
     @IBOutlet weak var table: UITableView!
-    
+   
     @IBAction func sendButtonPress(_ sender: UIButton) {
         let key = "trnsl.1.1.20181206T055317Z.85da48f152017968.c654d68a5e6f9d84366a3b6c00f92f2c5ef838bc"
         
         var components = URLComponents.init(string: "https://translate.yandex.net/api/v1.5/tr.json/translate")
         
         if let text = inputField?.text {
-            var translation = Translation()
-            translation.originalText=text
-            translation.languageFrom=chosenLanguageFrom
-            translation.languageTo=chosenLanguageTo
-            let queryLang = "\(chosenLanguageFrom.rawValue)-\(chosenLanguageTo.rawValue)"
+            
+            
+            let queryLang = "\(chosenLanguageFrom)-\(chosenLanguageTo)"
             components?.query="key=\(key)&text=\(text)&lang=\(queryLang)"
+            
             if let url = components?.url {
                 defaultSession.dataTask(with: url) { data, response, error in
-                    //if let json = try? JSONSerialization.jsonObject(with: data!, options: []) {
-                    DispatchQueue.main.async {
+                   DispatchQueue.main.async {
                         if let data = data, let translationResponse = try? JSONDecoder().decode(TranslationResponse.self, from: data) {
-                            translation.translatedText = translationResponse.translatedText
-                            translation.date = Date.init()
-                            self.translations.insert(translation, at: 0)
+                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                            if let context = appDelegate?.persistentContainer.viewContext {
+                                let entity = NSEntityDescription.entity(forEntityName: "Translation", in: context)
+                                let translation = Translation.init(entity: entity!, insertInto: context)
+                                
+                                translation.originalText=text
+                                translation.languageFrom=self.chosenLanguageFrom
+                                translation.languageTo=self.chosenLanguageTo
+                                translation.translatedText = translationResponse.translatedText
+                                translation.date = Date.init()
+                                do {
+                                    try context.save()
+                                } catch let err {
+                                    print(err)
+                                }
+                                
+                                self.loadData(appDelegate: appDelegate!, context: context)
+                                //self.translations.insert(translation, at: 0)
                             }
-                        self.table.reloadData()
+                           
+                        }
                     }
                 }.resume()
             }
         }
-        
-        
-        
     }
     
-    
-    
+    func loadData (appDelegate: AppDelegate, context: NSManagedObjectContext){
+        let fetchRequest = NSFetchRequest<Translation>(entityName: "Translation")
+        
+        translations = try! context.fetch(fetchRequest)
+        table.reloadData()
+        
+    }
 }
 
 extension ViewController: UITableViewDataSource {
@@ -81,6 +98,7 @@ extension ViewController: UITableViewDataSource {
         cell.textLabel?.text = translations[indexPath.row].translatedText
         cell.detailTextLabel?.text = translations[indexPath.row].originalText
         cell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
+        
         return cell
     }
 }
