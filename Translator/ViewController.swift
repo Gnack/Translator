@@ -22,6 +22,9 @@ class ViewController: UIViewController, UITableViewDelegate {
     var chosenLanguageFrom: String = "en"
     var chosenLanguageTo: String = "ru"
     
+    var queryLang: String {
+        return "\(chosenLanguageFrom)-\(chosenLanguageTo)"
+    }
     @IBOutlet weak var inputField: UITextField!
     
     
@@ -32,6 +35,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         table.dataSource=self
         table.transform = CGAffineTransform(scaleX: 1, y: -1)
         
+        table.register(TranslatorTableViewCell.self, forCellReuseIdentifier: "custom")
         
     }
     
@@ -46,7 +50,6 @@ class ViewController: UIViewController, UITableViewDelegate {
         if let text = inputField?.text {
             
             
-            let queryLang = "\(chosenLanguageFrom)-\(chosenLanguageTo)"
             components?.query="key=\(key)&text=\(text)&lang=\(queryLang)"
             
             if let url = components?.url {
@@ -82,7 +85,7 @@ class ViewController: UIViewController, UITableViewDelegate {
     
     func loadData (appDelegate: AppDelegate, context: NSManagedObjectContext){
         let fetchRequest = NSFetchRequest<Translation>(entityName: "Translation")
-        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         translations = try! context.fetch(fetchRequest)
         table.reloadData()
         
@@ -94,11 +97,18 @@ extension ViewController: UITableViewDataSource {
         return translations.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Out", for: indexPath)
-        cell.textLabel?.text = translations[indexPath.row].translatedText
-        cell.detailTextLabel?.text = translations[indexPath.row].originalText
-        cell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
-        
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "Out", for: indexPath)
+//        cell.textLabel?.text = translations[indexPath.row].translatedText
+//        cell.detailTextLabel?.text = translations[indexPath.row].originalText
+        let cell = tableView.dequeueReusableCell(withIdentifier: "custom", for: indexPath)
+        if let customCell = cell as? TranslatorTableViewCell {
+            customCell.translatedText?.text = translations[indexPath.row].translatedText
+            
+            customCell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
+            
+            return customCell
+        }
+
         return cell
     }
 }
