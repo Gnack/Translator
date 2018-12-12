@@ -42,9 +42,13 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: self.inputField.frame.height))
-        inputField.leftView = paddingView
+        let paddingLeftView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: self.inputField.frame.height))
+        inputField.leftView = paddingLeftView
         inputField.leftViewMode = UITextField.ViewMode.always
+        
+        let paddingRightView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: self.inputField.frame.height))
+        inputField.rightView = paddingRightView
+        inputField.rightViewMode = UITextField.ViewMode.always
         
         adjustViewsForLanguage()
         
