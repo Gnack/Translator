@@ -21,9 +21,7 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     @IBOutlet weak var inputFieldConstraint: NSLayoutConstraint!
     
     
-    @IBAction func clearInput(_ sender: UIButton) {
-        inputField.text = nil
-    }
+    
     
     var translations: [Translation] = []
     
@@ -180,6 +178,10 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
                 self.view.layoutIfNeeded()
             }
         }, completion: nil)
+    }
+    
+    @IBAction func clearInput(_ sender: UIButton) {
+        inputField.text = nil
     }
 }
 
