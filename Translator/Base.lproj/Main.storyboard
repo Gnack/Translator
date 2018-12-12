@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lGF-ck-aMm">
-                                <rect key="frame" x="8" y="28" width="359" height="593"/>
+                                <rect key="frame" x="8" y="28" width="359" height="587"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="D1f-jJ-nwF">
                                     <size key="itemSize" width="50" height="50"/>
@@ -38,16 +38,22 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Text" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MaC-x6-NHZ">
-                                <rect key="frame" x="8" y="629" width="359" height="30"/>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Text" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MaC-x6-NHZ">
+                                <rect key="frame" x="8" y="623" width="359" height="36"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hKV-eA-LLv">
-                                <rect key="frame" x="342" y="633" width="17" height="22"/>
-                                <state key="normal" image="Rectangle 3.7">
+                                <rect key="frame" x="342" y="630" width="17" height="22"/>
+                                <state key="normal" image="send">
                                     <color key="titleColor" red="0.064478395273841013" green="0.24233775013524855" blue="0.89803921568627454" alpha="0.84705882352941175" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -55,47 +61,65 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nXJ-Il-Pat">
-                                <rect key="frame" x="318" y="633" width="16" height="22"/>
-                                <state key="normal" image="Shape">
+                                <rect key="frame" x="321" y="630" width="16" height="22"/>
+                                <state key="normal" image="cancel">
                                     <color key="titleColor" red="0.064478395270000002" green="0.2423377501" blue="0.8980392157" alpha="0.84705882349999995" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="clearInput:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ogz-FX-Eec"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0jc-33-qB7">
-                                <rect key="frame" x="226" y="621" width="84" height="34"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Swap lang">
+                            <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0jc-33-qB7">
+                                <rect key="frame" x="20" y="625" width="32" height="32"/>
+                                <state key="normal" image="ru_image">
+                                    <color key="titleColor" red="0.064478395270000002" green="0.2423377501" blue="0.8980392157" alpha="0.84705882349999995" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="changeLanguage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5HJ-33-B4A"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E0M-0A-Q25">
+                                <rect key="frame" x="11" y="625" width="32" height="32"/>
+                                <state key="normal" image="en_image">
                                     <color key="titleColor" red="0.064478395270000002" green="0.2423377501" blue="0.8980392157" alpha="0.84705882349999995" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="swapLanguage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xLW-iO-eiq"/>
+                                    <action selector="changeLanguage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aIo-8o-w0O"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="hKV-eA-LLv" firstAttribute="centerY" secondItem="MaC-x6-NHZ" secondAttribute="centerY" id="1E3-m9-a6I"/>
+                            <constraint firstItem="0jc-33-qB7" firstAttribute="leading" secondItem="MaC-x6-NHZ" secondAttribute="leading" constant="12" id="1sd-Oy-IeI"/>
                             <constraint firstItem="lGF-ck-aMm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="29q-yi-eCk"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="lGF-ck-aMm" secondAttribute="trailing" constant="8" id="5Kf-eE-ufI"/>
+                            <constraint firstItem="MaC-x6-NHZ" firstAttribute="bottom" secondItem="0jc-33-qB7" secondAttribute="bottom" constant="2" id="69y-cY-Qwq"/>
+                            <constraint firstItem="nXJ-Il-Pat" firstAttribute="centerY" secondItem="MaC-x6-NHZ" secondAttribute="centerY" id="JMk-Lt-5xK"/>
                             <constraint firstItem="MaC-x6-NHZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="JSN-jH-p5E"/>
-                            <constraint firstItem="hKV-eA-LLv" firstAttribute="leading" secondItem="nXJ-Il-Pat" secondAttribute="trailing" constant="8" id="Kxp-6o-Zm6"/>
+                            <constraint firstItem="MaC-x6-NHZ" firstAttribute="trailing" secondItem="nXJ-Il-Pat" secondAttribute="trailing" constant="30" identifier="horizontalConstraint" id="Kxp-6o-Zm6"/>
+                            <constraint firstItem="MaC-x6-NHZ" firstAttribute="bottom" secondItem="E0M-0A-Q25" secondAttribute="bottom" constant="2" id="Y0B-ew-SA8"/>
                             <constraint firstItem="MaC-x6-NHZ" firstAttribute="top" secondItem="lGF-ck-aMm" secondAttribute="bottom" constant="8" id="bzC-pf-3sE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="MaC-x6-NHZ" secondAttribute="bottom" constant="8" id="cAQ-jE-c5v"/>
+                            <constraint firstItem="0jc-33-qB7" firstAttribute="top" secondItem="MaC-x6-NHZ" secondAttribute="top" constant="2" id="i1y-2v-AZx"/>
+                            <constraint firstItem="E0M-0A-Q25" firstAttribute="leading" secondItem="MaC-x6-NHZ" secondAttribute="leading" constant="3" id="ix3-KE-rqO"/>
                             <constraint firstItem="MaC-x6-NHZ" firstAttribute="trailing" secondItem="hKV-eA-LLv" secondAttribute="trailing" constant="8" id="knY-7b-MOE"/>
                             <constraint firstItem="lGF-ck-aMm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="mRJ-m4-wrf"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="MaC-x6-NHZ" secondAttribute="trailing" constant="8" id="nzJ-Nq-c1h"/>
-                            <constraint firstItem="MaC-x6-NHZ" firstAttribute="bottom" secondItem="hKV-eA-LLv" secondAttribute="bottom" constant="4" id="ujS-Rk-rLE"/>
-                            <constraint firstItem="MaC-x6-NHZ" firstAttribute="bottom" secondItem="nXJ-Il-Pat" secondAttribute="bottom" constant="4" id="w7i-R7-CE5"/>
+                            <constraint firstItem="E0M-0A-Q25" firstAttribute="top" secondItem="MaC-x6-NHZ" secondAttribute="top" constant="2" id="ue2-NS-oPP"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="chatView" destination="lGF-ck-aMm" id="l7r-yA-iak"/>
                         <outlet property="clearButton" destination="nXJ-Il-Pat" id="Esa-Wd-xt2"/>
+                        <outlet property="enButton" destination="E0M-0A-Q25" id="APh-NX-SZO"/>
+                        <outlet property="enConstraint" destination="ix3-KE-rqO" id="4X7-qs-BmX"/>
                         <outlet property="inputField" destination="MaC-x6-NHZ" id="qIB-Zq-9ZY"/>
+                        <outlet property="ruButton" destination="0jc-33-qB7" id="Be8-5X-odV"/>
+                        <outlet property="ruConstraint" destination="1sd-Oy-IeI" id="V2D-7y-9HA"/>
                         <outlet property="sendButton" destination="hKV-eA-LLv" id="2ef-sJ-R1A"/>
-                        <outlet property="swap" destination="0jc-33-qB7" id="gej-QL-bYg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -104,7 +128,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Rectangle 3.7" width="17" height="18"/>
-        <image name="Shape" width="16" height="16"/>
+        <image name="cancel" width="16" height="16"/>
+        <image name="en_image" width="32" height="32"/>
+        <image name="ru_image" width="32" height="32"/>
+        <image name="send" width="17" height="18"/>
     </resources>
 </document>

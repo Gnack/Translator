@@ -13,7 +13,11 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var clearButton: UIButton!
-    @IBOutlet weak var swap: UIButton!
+    @IBOutlet weak var ruButton: UIButton!
+    @IBOutlet weak var enButton: UIButton!
+    @IBOutlet weak var enConstraint: NSLayoutConstraint!
+    @IBOutlet weak var ruConstraint: NSLayoutConstraint!
+    
     
     @IBAction func clearInput(_ sender: UIButton) {
         inputField.text = nil
@@ -25,7 +29,9 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     var dataTask: URLSessionDataTask?
     
     var chosenLanguageFrom: String = "en"
-    var chosenLanguageTo: String = "ru"
+    var chosenLanguageTo: String {
+        return chosenLanguageFrom == "en" ? "ru" : "en"
+    }
     
     var queryLang: String {
         return "\(chosenLanguageFrom)-\(chosenLanguageTo)"
@@ -36,10 +42,15 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: self.inputField.frame.height))
+        inputField.leftView = paddingView
+        inputField.leftViewMode = UITextField.ViewMode.always
+
+        adjustViewsForLanguage()
+     
         chatView.delegate=self
         chatView.dataSource=self
         chatView.transform = CGAffineTransform(scaleX: 1, y: -1)
-        
         chatView.register(TranslatorCollectionViewCell.self, forCellWithReuseIdentifier: "custom")
         
         loadData()
@@ -48,11 +59,6 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
     
     @IBOutlet weak var chatView: UICollectionView!
-    
-    @IBAction func swapLanguage(_ sender: UIButton) {
-        
-    }
-    
     @IBAction func sendButtonPress(_ sender: UIButton) {
         let key = "trnsl.1.1.20181206T055317Z.85da48f152017968.c654d68a5e6f9d84366a3b6c00f92f2c5ef838bc"
         var components = URLComponents.init(string: "https://translate.yandex.net/api/v1.5/tr.json/translate")
@@ -101,6 +107,30 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
             chatView.reloadData()
         }
     }
+    
+    @IBAction func changeLanguage(_ sender: UIButton) {
+        chosenLanguageFrom = chosenLanguageFrom == "en" ? "ru" : "en"
+        adjustViewsForLanguage()
+    }
+    
+    func adjustViewsForLanguage () {
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
+            if self.chosenLanguageFrom == "en" {
+                self.inputField.backgroundColor = UIColor.init(red: 0, green: 124/255, blue: 233/255, alpha: 1)
+                self.ruConstraint.constant = 12
+                self.enConstraint.constant = 3
+                self.view.bringSubviewToFront(self.enButton)
+                self.view.layoutIfNeeded()
+            } else {
+                self.inputField.backgroundColor = UIColor.init(red: 237/255, green: 76/255, blue: 92/255, alpha: 1)
+                self.ruConstraint.constant = 3
+                self.enConstraint.constant = 12
+                self.view.bringSubviewToFront(self.ruButton)
+                self.view.layoutIfNeeded()
+            }
+        }, completion: nil)
+    }
+    
 }
 
 extension ViewController: UICollectionViewDataSource{
@@ -112,35 +142,32 @@ extension ViewController: UICollectionViewDataSource{
         if let customCell = cell as? TranslatorCollectionViewCell {
             
             customCell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
+    
+            customCell.originalText.text = translations[indexPath.row].originalText
+            customCell.translatedText.text = translations[indexPath.row].translatedText
             
-            if let originalText = translations[indexPath.row].originalText {
-                customCell.originalText.text = originalText
-                customCell.originalText.backgroundColor = UIColor.clear
-                let size = CGSize(width: 250, height: 1000)
-                let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-                let estimatedFrame = NSString(string: originalText).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: customCell.originalText.font!], context: nil)
-                customCell.originalText.frame = CGRect(x: 0, y: 0, width: estimatedFrame.width + 16, height: estimatedFrame.height + 10)
-            }
             
-            if let translatedText = translations[indexPath.row].translatedText {
-                customCell.translatedText.text = translatedText
-                customCell.translatedText.backgroundColor = UIColor.clear
-                
-                let size = CGSize(width: 250, height: 1000)
-                
-                let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-                let estimatedFrame = NSString(string: translatedText).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: customCell.translatedText.font!], context: nil)
-                customCell.translatedText.frame = CGRect(x: 0, y: customCell.originalText.frame.height - 5, width: estimatedFrame.width + 16, height: estimatedFrame.height + 10)
-            }
+            let size = CGSize(width: 250, height: 1000)
+            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+            let estimatedOriginalFrame = NSString(string: customCell.originalText.text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: customCell.originalText.font!], context: nil)
+            let estimatedTranslatedFrame = NSString(string: customCell.translatedText.text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: customCell.translatedText.font!], context: nil)
             
             if translations[indexPath.row].languageFrom == "en" {
-                let width = max(customCell.translatedText.frame.width, customCell.originalText.frame.width) + 10
-                let height = customCell.translatedText.frame.height + customCell.originalText.frame.height + 10
+                let width = max(estimatedOriginalFrame.width, estimatedTranslatedFrame.width) + 26
+                let height = estimatedOriginalFrame.height + estimatedTranslatedFrame.height + 30
+                
+                customCell.originalText.frame = CGRect(x: 0, y: 0, width: estimatedOriginalFrame.width + 16, height: estimatedOriginalFrame.height + 10)
+                customCell.translatedText.frame = CGRect(x: 0, y: customCell.originalText.frame.height - 5, width: estimatedTranslatedFrame.width + 16, height: estimatedTranslatedFrame.height + 10)
+                
                 customCell.bubble.frame = CGRect(x: 0, y: 0, width: width, height: height)
                 customCell.bubble.backgroundColor = UIColor.init(red: 0, green: 124/255, blue: 233/255, alpha: 1)
             } else {
-                let width = max(customCell.translatedText.frame.width, customCell.originalText.frame.width) + 10
-                let height = customCell.translatedText.frame.height + customCell.originalText.frame.height + 10
+                let width = max(estimatedOriginalFrame.width, estimatedTranslatedFrame.width) + 26
+                let height = estimatedOriginalFrame.height + estimatedTranslatedFrame.height + 30
+                
+                customCell.originalText.frame = CGRect(x: chatView.frame.width - width, y: 0, width: estimatedOriginalFrame.width + 16, height: estimatedOriginalFrame.height + 10)
+                customCell.translatedText.frame = CGRect(x: chatView.frame.width - width, y: customCell.originalText.frame.height - 5, width: estimatedTranslatedFrame.width + 16, height: estimatedTranslatedFrame.height + 10)
+                
                 customCell.bubble.frame = CGRect(x: chatView.frame.width - width, y: 0, width: width, height: height)
                 customCell.bubble.backgroundColor = UIColor.init(red: 237/255, green: 76/255, blue: 92/255, alpha: 1)
             }

@@ -26,8 +26,11 @@ class TranslatorCollectionViewCell: UICollectionViewCell {
         
         translatedText.font = UIFont.boldSystemFont(ofSize: 18)
         translatedText.textColor = UIColor.white
+        translatedText.backgroundColor = UIColor.clear
+        
         originalText.font = UIFont.systemFont(ofSize: 14)
         originalText.textColor = UIColor.white
+        originalText.backgroundColor = UIColor.clear
         
         contentView.addSubview(bubble)
         contentView.addSubview(originalText)
