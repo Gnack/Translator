@@ -66,14 +66,14 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
                 let keyboardHeigth = keyboardRect.height
                 UIView.animate(withDuration: 1, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
                     self.inputFieldConstraint.constant = keyboardHeigth - 20
-                    self.clearButton.isEnabled = true
+                    self.clearButton.isHidden = false
                 }, completion: nil)
             }
         }
         if notification.name == UIResponder.keyboardWillHideNotification {
             UIView.animate(withDuration: 1, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
                 self.inputFieldConstraint.constant = 8
-                self.clearButton.isEnabled = false
+                self.clearButton.isHidden = true
             }, completion: nil)
         }
     }
@@ -119,22 +119,22 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
                     if let url = translateComponents?.url {
                         self.defaultSession.dataTask(with: url) { data, response, error in
                             if let data = data, let translationResponse = try? JSONDecoder().decode(TranslationResponse.self, from: data) {
-                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                                if let context = appDelegate?.persistentContainer.viewContext {
-                                    let entity = NSEntityDescription.entity(forEntityName: "Translation", in: context)
-                                    let translation = Translation.init(entity: entity!, insertInto: context)
-                                    
-                                    translation.originalText=text
-                                    translation.languageFrom=self.chosenLanguageFrom
-                                    translation.languageTo=self.chosenLanguageTo
-                                    translation.translatedText = translationResponse.translatedText
-                                    translation.date = Date.init()
-                                    do {
-                                        try context.save()
-                                    } catch let err {
-                                        print(err)
-                                    }
-                                    DispatchQueue.main.async {
+                                DispatchQueue.main.async {
+                                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                                    if let context = appDelegate?.persistentContainer.viewContext {
+                                        let entity = NSEntityDescription.entity(forEntityName: "Translation", in: context)
+                                        let translation = Translation.init(entity: entity!, insertInto: context)
+                                        
+                                        translation.originalText=text
+                                        translation.languageFrom=self.chosenLanguageFrom
+                                        translation.languageTo=self.chosenLanguageTo
+                                        translation.translatedText = translationResponse.translatedText
+                                        translation.date = Date.init()
+                                        do {
+                                            try context.save()
+                                        } catch let err {
+                                            print(err)
+                                        }
                                         self.loadData()
                                     }
                                 }
@@ -142,7 +142,6 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
                             }.resume()
                     }
                 }
-                
                 }.resume()
         }
     }
