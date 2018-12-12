@@ -63,7 +63,7 @@
                                     <action selector="sendButtonPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cGS-WH-nWs"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nXJ-Il-Pat">
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nXJ-Il-Pat">
                                 <rect key="frame" x="321" y="630" width="16" height="22"/>
                                 <state key="normal" image="cancel">
                                     <color key="titleColor" red="0.064478395270000002" green="0.2423377501" blue="0.8980392157" alpha="0.84705882349999995" colorSpace="custom" customColorSpace="sRGB"/>

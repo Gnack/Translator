@@ -66,56 +66,84 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
                 let keyboardHeigth = keyboardRect.height
                 UIView.animate(withDuration: 1, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
                     self.inputFieldConstraint.constant = keyboardHeigth - 20
+                    self.clearButton.isEnabled = true
                 }, completion: nil)
             }
         }
         if notification.name == UIResponder.keyboardWillHideNotification {
-            
-                UIView.animate(withDuration: 1, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
-                    self.inputFieldConstraint.constant = 8
-                }, completion: nil)
-            
+            UIView.animate(withDuration: 1, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
+                self.inputFieldConstraint.constant = 8
+                self.clearButton.isEnabled = false
+            }, completion: nil)
         }
     }
     
     
     
     @IBAction func sendButtonPress(_ sender: UIButton) {
-        let key = "trnsl.1.1.20181206T055317Z.85da48f152017968.c654d68a5e6f9d84366a3b6c00f92f2c5ef838bc"
-        var components = URLComponents.init(string: "https://translate.yandex.net/api/v1.5/tr.json/translate")
-        
-        if let text = inputField?.text {
+        if let text = inputField.text{
+            translate(text: text)
             inputField.text = nil
-            components?.query="key=\(key)&text=\(text)&lang=\(queryLang)"
-            
-            if let url = components?.url {
-                defaultSession.dataTask(with: url) { data, response, error in
-                    DispatchQueue.main.async {
-                        if let data = data, let translationResponse = try? JSONDecoder().decode(TranslationResponse.self, from: data) {
-                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            if let context = appDelegate?.persistentContainer.viewContext {
-                                let entity = NSEntityDescription.entity(forEntityName: "Translation", in: context)
-                                let translation = Translation.init(entity: entity!, insertInto: context)
-                                
-                                translation.originalText=text
-                                translation.languageFrom=self.chosenLanguageFrom
-                                translation.languageTo=self.chosenLanguageTo
-                                translation.translatedText = translationResponse.translatedText
-                                translation.date = Date.init()
-                                do {
-                                    try context.save()
-                                } catch let err {
-                                    print(err)
-                                }
-                                
-                                self.loadData()
-                                
-                            }
-                            
+        }
+    }
+
+    func detectLanguage(text: String) {
+        let languageCheckUrl = URL(fileURLWithPath: "")
+        defaultSession.dataTask(with: languageCheckUrl) { data, response, error in
+            if let data = data, let detectionResponse = try? JSONDecoder().decode(DetectionResponse.self, from: data) {
+                if let detectedLanguage = detectionResponse.detectedLanguage, detectionResponse.detectedLanguage == "ru" || detectionResponse.detectedLanguage == "en" {
+                    self.chosenLanguageFrom = detectedLanguage
+                }
+            }
+        }.resume()
+    }
+
+
+    func translate(text: String){
+        let key = "trnsl.1.1.20181206T055317Z.85da48f152017968.c654d68a5e6f9d84366a3b6c00f92f2c5ef838bc"
+       
+        
+        var languageDetectComponents = URLComponents.init(string: "https://translate.yandex.net/api/v1.5/tr.json/detect")
+        languageDetectComponents?.query="key=\(key)&text=\(text)"
+        if let languageDetectUrl = languageDetectComponents?.url {
+            defaultSession.dataTask(with: languageDetectUrl) { data, response, error in
+                if let data = data, let detectionResponse = try? JSONDecoder().decode(DetectionResponse.self, from: data) {
+                    if let detectedLanguage = detectionResponse.detectedLanguage, detectionResponse.detectedLanguage == "ru" || detectionResponse.detectedLanguage == "en" {
+                        self.chosenLanguageFrom = detectedLanguage
+                        DispatchQueue.main.async {
+                            self.adjustViewsForLanguage()
                         }
                     }
-                    }.resume()
-            }
+                    var translateComponents = URLComponents.init(string: "https://translate.yandex.net/api/v1.5/tr.json/translate")
+                    translateComponents?.query="key=\(key)&text=\(text)&lang=\(self.queryLang)"
+                    if let url = translateComponents?.url {
+                        self.defaultSession.dataTask(with: url) { data, response, error in
+                            if let data = data, let translationResponse = try? JSONDecoder().decode(TranslationResponse.self, from: data) {
+                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                                if let context = appDelegate?.persistentContainer.viewContext {
+                                    let entity = NSEntityDescription.entity(forEntityName: "Translation", in: context)
+                                    let translation = Translation.init(entity: entity!, insertInto: context)
+                                    
+                                    translation.originalText=text
+                                    translation.languageFrom=self.chosenLanguageFrom
+                                    translation.languageTo=self.chosenLanguageTo
+                                    translation.translatedText = translationResponse.translatedText
+                                    translation.date = Date.init()
+                                    do {
+                                        try context.save()
+                                    } catch let err {
+                                        print(err)
+                                    }
+                                    DispatchQueue.main.async {
+                                        self.loadData()
+                                    }
+                                }
+                            }
+                            }.resume()
+                    }
+                }
+                
+                }.resume()
         }
     }
     
