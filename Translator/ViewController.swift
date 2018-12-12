@@ -11,12 +11,14 @@ import CoreData
 
 class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
     
+    @IBOutlet weak var chatView: UICollectionView!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var clearButton: UIButton!
     @IBOutlet weak var ruButton: UIButton!
     @IBOutlet weak var enButton: UIButton!
     @IBOutlet weak var enConstraint: NSLayoutConstraint!
     @IBOutlet weak var ruConstraint: NSLayoutConstraint!
+    @IBOutlet weak var inputFieldConstraint: NSLayoutConstraint!
     
     
     @IBAction func clearInput(_ sender: UIButton) {
@@ -45,20 +47,39 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: self.inputField.frame.height))
         inputField.leftView = paddingView
         inputField.leftViewMode = UITextField.ViewMode.always
-
+        
         adjustViewsForLanguage()
-     
+        
         chatView.delegate=self
         chatView.dataSource=self
         chatView.transform = CGAffineTransform(scaleX: 1, y: -1)
         chatView.register(TranslatorCollectionViewCell.self, forCellWithReuseIdentifier: "custom")
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(HandleKeyboardNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(HandleKeyboardNotification), name: UIResponder.keyboardWillHideNotification, object: nil)
         loadData()
+    }
+    
+    @objc func HandleKeyboardNotification (notification: NSNotification) {
+        if notification.name == UIResponder.keyboardWillShowNotification {
+            if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+                let keyboardRect = keyboardFrame.cgRectValue
+                let keyboardHeigth = keyboardRect.height
+                UIView.animate(withDuration: 1, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
+                    self.inputFieldConstraint.constant = keyboardHeigth - 20
+                }, completion: nil)
+            }
+        }
+        if notification.name == UIResponder.keyboardWillHideNotification {
+            
+                UIView.animate(withDuration: 1, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
+                    self.inputFieldConstraint.constant = 8
+                }, completion: nil)
+            
+        }
     }
     
     
     
-    @IBOutlet weak var chatView: UICollectionView!
     @IBAction func sendButtonPress(_ sender: UIButton) {
         let key = "trnsl.1.1.20181206T055317Z.85da48f152017968.c654d68a5e6f9d84366a3b6c00f92f2c5ef838bc"
         var components = URLComponents.init(string: "https://translate.yandex.net/api/v1.5/tr.json/translate")
@@ -69,7 +90,7 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
             
             if let url = components?.url {
                 defaultSession.dataTask(with: url) { data, response, error in
-                   DispatchQueue.main.async {
+                    DispatchQueue.main.async {
                         if let data = data, let translationResponse = try? JSONDecoder().decode(TranslationResponse.self, from: data) {
                             let appDelegate = UIApplication.shared.delegate as? AppDelegate
                             if let context = appDelegate?.persistentContainer.viewContext {
@@ -88,12 +109,12 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
                                 }
                                 
                                 self.loadData()
-                               
+                                
                             }
-                           
+                            
                         }
                     }
-                }.resume()
+                    }.resume()
             }
         }
     }
@@ -133,22 +154,23 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
             }
         }, completion: nil)
     }
-    
 }
 
 extension ViewController: UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return translations.count
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        inputField.endEditing(true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "custom", for: indexPath)
         if let customCell = cell as? TranslatorCollectionViewCell {
-            
             customCell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
-    
             customCell.originalText.text = translations[indexPath.row].originalText
             customCell.translatedText.text = translations[indexPath.row].translatedText
-            
             
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
@@ -174,15 +196,12 @@ extension ViewController: UICollectionViewDataSource{
                 customCell.bubble.frame = CGRect(x: chatView.frame.width - width, y: 0, width: width, height: height)
                 customCell.bubble.backgroundColor = UIColor.init(red: 237/255, green: 76/255, blue: 92/255, alpha: 1)
             }
-            
             return customCell
         }
-
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
         if let originalText = translations[indexPath.row].originalText, let translatedText = translations[indexPath.row].translatedText {
             let originalSize = CGSize(width: 250, height: 1000)
             let originalOptions = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
@@ -194,11 +213,7 @@ extension ViewController: UICollectionViewDataSource{
             
             return CGSize(width: chatView.frame.width, height: originalEstimatedFrame.height + translatedEstimatedFrame.height + 30)
         }
-        
-
-        
         return CGSize(width: view.frame.width - 10, height: 100)
-
     }
     
     
