@@ -117,12 +117,15 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
         UIView.animate(withDuration: 0.5, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
             if self.chosenLanguageFrom == "en" {
                 self.inputField.backgroundColor = UIColor.init(red: 0, green: 124/255, blue: 233/255, alpha: 1)
+                self.inputField.placeholder = "Английский"
+                
                 self.ruConstraint.constant = 12
                 self.enConstraint.constant = 3
                 self.view.bringSubviewToFront(self.enButton)
                 self.view.layoutIfNeeded()
             } else {
                 self.inputField.backgroundColor = UIColor.init(red: 237/255, green: 76/255, blue: 92/255, alpha: 1)
+                self.inputField.placeholder = "Русский"
                 self.ruConstraint.constant = 3
                 self.enConstraint.constant = 12
                 self.view.bringSubviewToFront(self.ruButton)
