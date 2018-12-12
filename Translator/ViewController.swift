@@ -100,7 +100,7 @@ class ViewController: UIViewController, UICollectionViewDelegateFlowLayout {
 
 
     func translate(text: String){
-        let key = "trnsl.1.1.20181206T055317Z.85da48f152017968.c654d68a5e6f9d84366a3b6c00f92f2c5ef838bc"
+        
        
         
         var languageDetectComponents = URLComponents.init(string: "https://translate.yandex.net/api/v1.5/tr.json/detect")
